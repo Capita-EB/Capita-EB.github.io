@@ -27,8 +27,10 @@
     <!-- MAIN CONTENT -->
     <div id="main_content_wrap" class="outer">
       <section id="main_content" class="inner">
-        <p>Problem
-One of the challenges testing a system with a large domain and a complex data model is setting up fixtures to test against.</p>
+        <h1>
+<a name="problem" class="anchor" href="#problem"><span class="octicon octicon-link"></span></a>Problem</h1>
+
+<p>One of the challenges testing a system with a large domain and a complex data model is setting up fixtures to test against.</p>
 
 <p>Once we move beyond unit tests and want to create real objects with real data – either as part of the setup stage of an automated test or for manually testing – then things become more challenging:</p>
 
@@ -37,8 +39,10 @@ Extra code in our tests concerned with fixture details just adds noise to the te
 False-negatives: To get valid fixtures we might well have to set up other bits of data and other objects that our test just doesn’t care about, otherwise our tests fail for reasons unrelated to our test scenario
 False-positives: Tests might unwittingly pass because we’ve left fields empty that we don’t (think we) care about for the purposes of our test e.g. our test only works properly because something is null or false etc.</p>
 
-<p>Initial Solution
-As an example let’s imagine a simple employee that we want to create for our test:</p>
+<h2>
+<a name="initial-solution" class="anchor" href="#initial-solution"><span class="octicon octicon-link"></span></a>Initial Solution</h2>
+
+<p>As an example let’s imagine a simple employee that we want to create for our test:</p>
 
 <p>public class Employee {
     String firstname;
@@ -71,8 +75,10 @@ what if the address is required too? Just what’s involved with making an Addre
 will it matter if the salary is not set to anything? I’m not interested in salary here but maybe I should make something up in case having a null salary makes something weird happen elsewhere.
 You can imagine how quickly this complexity escalates with real code.</p>
 
-<p>Improvement - The Builder
-Using the Builder Pattern to create our fixtures can address some of these issues:</p>
+<h2>
+<a name="improvement---the-builder" class="anchor" href="#improvement---the-builder"><span class="octicon octicon-link"></span></a>Improvement - The Builder</h2>
+
+<p>Using the Builder Pattern to create our fixtures can address some of these issues:</p>
 
 <p>all the fields in our object are pre-populated
 we only need to override the contents of the fields that we care about
@@ -143,8 +149,10 @@ use method chaining ending with build() to create our object</p>
 the dateOfBirth(LocalDate) method is accompanied by an age(Integer) method so you can make your test code simpler and more readable by avoiding the boilerplate of massaging a LocalDate
 Finally you may have noticed that the homeAddress field is populated initially with … an AddressBuilder!</p>
 
-<p>Better Data
-We’ve made our test setup a lot better with the builder but we can do better with the quality of the default data. At the moment every test that uses our builder is going to get an Employee with exactly the same default attributes which may create its own false-positive problem for us.</p>
+<h2>
+<a name="better-data" class="anchor" href="#better-data"><span class="octicon octicon-link"></span></a>Better Data</h2>
+
+<p>We’ve made our test setup a lot better with the builder but we can do better with the quality of the default data. At the moment every test that uses our builder is going to get an Employee with exactly the same default attributes which may create its own false-positive problem for us.</p>
 
 <p>What we need is random data:</p>
 
