@@ -1,0 +1,9 @@
+<div class="panel roundedbox">
+    <h2>Category List</h2>
+    <ul>
+        {% for cat in site.categories %}
+        <li>
+            <a href="/categories/{{ cat[0] }}">{{ cat[0] }}</a></li>
+        {% endfor %}
+    </ul>
+</div>

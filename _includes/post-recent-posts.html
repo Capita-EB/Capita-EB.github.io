@@ -1,0 +1,24 @@
+<h2>Recent Posts</h2>
+<div class="posts-list">
+    <ul>
+        {% for post in site.posts limit:10 %}
+        <li>
+            <div class="post-summary">
+                <h3>{{ post.title }}</h3>
+                <dl>
+                    <dt>Date:</dt>
+                    <dd>{{ post.date | date_to_string }}</dd>
+                    <dt>Excerpt:</dt>
+                    <dd>{{ post.excerpt }}</dd>
+                </dl>
+                <div class="categories">Filed under {{ post.categories | category_links }}</div>
+            <div class="btn-row">
+                <div class="positive-btns">
+                    <a class="btn btn-primary" href="{{ post.url }}">Read more</a>
+                </div>
+            </div>
+            </div>
+        </li>
+        {% endfor %}
+    </ul>
+</div>

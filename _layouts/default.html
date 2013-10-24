@@ -5,11 +5,22 @@
 
         <div class="site">
             {% include header.html %}
-            <div id="main_content_wrap" class="outer">
-                <section id="main_content" class="inner">
-                    {{ content }}
-                </section>
+            <div id="page-content" class="page-centered">
+                <div class="row-fluid">
+                    <div class="span9">
+                        <div class="panel roundedbox">
+                            {{ content }}
+                        </div>
+                    </div>
+
+                    <div class="span3">
+                        {% include post-categories.html %}
+                    </div>
+                </div>
+
+
             </div>
+
             {% include footer.html %}
         </div>
     </body>

@@ -3,18 +3,17 @@ layout: post
 title:  "Markdown template"
 date:   2013-10-16 08:21:30
 category: testing
+excerpt: This is the post excerpt    This is the post excerptThis is the post excerptThis is the post excerptThis is the post excerptThis is the post excerptThis is the post excerptThis is the post excerpt
 ---
 
-Download
---------
+###Download###
 
 [Markdown 1.0.1][dl] (18 KB) -- 17 Dec 2004
 
 [dl]: http://daringfireball.net/projects/downloads/Markdown_1.0.1.zip
 
 
-Introduction
-------------
+###Introduction###
 
  Markdown is a text-to-HTML conversion tool for web writers. Markdown
 allows you to write using an easy-to-read, easy-to-write plain text
@@ -55,8 +54,8 @@ license. See the [License] [pl] page for more information.
   [pl]: /projects/markdown/license
 
 
-Discussion List <a id="discussion-list" />
----------------
+###Discussion List <a id="discussion-list" />###
+
 
 I've set up a public [mailing list for discussion about Markdown] [ml].
 Any topic related to Markdown -- both its formatting syntax and
@@ -69,8 +68,7 @@ improvements to Markdown.
   [ml]: http://six.pairlist.net/mailman/listinfo/markdown-discuss
 
 
-Installation and Requirements <a id="install" />
------------------------------
+###Installation and Requirements <a id="install" />###
 
 Markdown requires Perl 5.6.0 or later. Welcome to the 21st Century.
 Markdown also requires the standard Perl library module [Digest::MD5]
@@ -79,7 +77,7 @@ Markdown also requires the standard Perl library module [Digest::MD5]
   [md5]: http://search.cpan.org/dist/Digest-MD5/MD5.pm
 
 
-### Movable Type ###
+#### Movable Type ####
 
 Markdown works with Movable Type version 2.6 or later (including
 Movable Type 3.0).
@@ -118,7 +116,7 @@ Markdown to produce HTML 4 output, see "Configuration", below.
 
 
 
-### Blosxom ###
+#### Blosxom ####
 
 Markdown works with Blosxom version 2.0 or later.
 
@@ -144,7 +142,7 @@ Markdown works with Blosxom version 2.0 or later.
   [meta]: http://www.blosxom.com/plugins/meta/meta.htm
 
 
-### BBEdit ###
+#### BBEdit ####
 
 Markdown works with BBEdit 6.1 or later on Mac OS X. It also works
 with BBEdit 5.1 or later and MacPerl 5.6.1 on Mac OS 8.6 or later. If
@@ -168,8 +166,7 @@ pre-installed on Mac OS X 10.3 (Panther).
 
 
 
-Configuration  <a id="configuration"></a>
--------------
+###Configuration  <a id="configuration"></a>###
 
 By default, Markdown produces XHTML output for tags with empty elements.
 E.g.:
@@ -181,7 +178,7 @@ Markdown can be configured to produce HTML-style tags; e.g.:
     <br>
 
 
-### Movable Type ###
+#### Movable Type ####
 
 You need to use a special `MTMarkdownOptions` container tag in each
 Movable Type template where you want HTML 4-style output:
@@ -203,7 +200,7 @@ publish the raw Markdown-formatted text without translation into
     </MTMarkdownOptions>
 
 
-### Command-Line ###
+#### Command-Line ####
 
 Use the `--html4tags` command-line switch to produce HTML output from a
 Unix-style command line. E.g.:
@@ -214,8 +211,7 @@ Type `perldoc Markdown.pl`, or read the POD documentation within the
 Markdown.pl source code for more information.
 
 
-Acknowledgements <a id="acknowledgements" />
-----------------
+###Acknowledgements <a id="acknowledgements" />###
 
 [Aaron Swartz][] deserves a tremendous amount of credit for his feedback on the
 design of Markdown's formatting syntax. Markdown is *much* better thanks
