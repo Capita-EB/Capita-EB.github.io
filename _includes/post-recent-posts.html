@@ -1,24 +1,32 @@
-<h2>Recent Posts</h2>
-<div class="posts-list">
+
+<div class="posts-list clearfix">
     <ul>
-        {% for post in site.posts limit:10 %}
-        <li>
-            <div class="post-summary">
-                <h3>{{ post.title }}</h3>
+        {% for post in paginator.posts %}
+        <li class="clearfix">
+            <div class="post-summary layout-{{ post.homepageStyle }}">
+                <h3><a href="{{ post.url }}">{{ post.title }}</a></h3>
                 <dl>
-                    <dt>Date:</dt>
-                    <dd>{{ post.date | date_to_string }}</dd>
-                    <dt>Excerpt:</dt>
-                    <dd>{{ post.excerpt }}</dd>
+                    <dt>Published:</dt>
+                    <dd class="highlight">{{ post.date | date_to_string }}</dd>
+
+                    <dt>Category:</dt>
+                    <dd class="highlight">{{ post.categories | category_links }}</dd>
+
+                    <dt>Author:</dt>
+                    <dd class="highlight">Orbit Tech Team</dd>
+
+
                 </dl>
-                <div class="categories">Filed under {{ post.categories | category_links }}</div>
-            <div class="btn-row">
-                <div class="positive-btns">
-                    <a class="btn btn-primary" href="{{ post.url }}">Read more</a>
+
+                {% if post.image %}
+                <img src="/images/{{ post.image }}" />
+                {% endif %}
+                <p> {{ post.excerpt }}</p>
+                    <a class="highlight read-more" href="{{ post.url }}">Read more >></a>
                 </div>
-            </div>
-            </div>
         </li>
         {% endfor %}
     </ul>
+
 </div>
+

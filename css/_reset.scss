@@ -1,0 +1,41 @@
+body {
+  margin:0;
+  padding:0;
+  text-decoration: none;
+}
+.clearfix:after {
+  content: ".";
+  display: block;
+  clear: both;
+  visibility: hidden;
+  line-height: 0;
+  height: 0;
+}
+
+
+* html .clearfix {
+  height: 1%;
+}
+
+a {
+  text-decoration:none;
+  &:hover {
+    text-decoration:underline;
+  }
+}
+
+ul {
+  list-style-type:none;
+  margin:0;
+  padding:0
+}
+
+dt, dd {
+  display:inline;
+  margin:0
+
+}
+
+dl > dd:not(:last-child):after {
+  content:' /'
+}

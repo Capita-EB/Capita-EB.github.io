@@ -1,0 +1,6 @@
+<div class="pagination">
+    <a href="/" title="Page 1" id="{{count}}><span class="page-number ">1</span></a>
+    {% for count in (2..paginator.total_pages) %}
+        <a href="/{{ count }}/" id="{{count}}" title="Page {{count}}"><span class="page-number" ">{{ count }}</span></a>
+    {% endfor %}
+</div>

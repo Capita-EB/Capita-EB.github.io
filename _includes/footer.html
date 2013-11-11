@@ -1,0 +1,31 @@
+<footer class="clearfix">
+    <div>
+        <p>
+            Capita Employee Benefits is a trading name of Capita Employee Benefits Limited and Capita Employee Benefits (Consulting) Limited. Part of Capita plc. www.capita.co.uk. Capita Employee Benefits Limited and Capita Employee Benefits (Consulting) Limited are registered in England & Wales No: 02260524 and 01860772 respectively. Registered Office: 17 Rochester Row, Westminster, London, SW1P 1QT. Separately authorised and regulated by the Financial Conduct Authority.
+        </p>
+    </div>
+</footer>
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script>
+    $(function() {
+        var url = window.location.pathname,
+            dir = url.substring(0, url.lastIndexOf('/')).split('/'),
+            page = dir[1];
+        if (page !==undefined) {
+            $('.pagination a#'+ page).addClass('active');
+        } else {
+            $('.pagination a:first').addClass('active');
+        }
+
+
+        $('#back-to-top').click(function() {
+            console.log('clicked');
+            $('body,html').animate({
+                scrollTop: 0
+            }, 800);
+            return false;
+        });
+
+    });
+</script>

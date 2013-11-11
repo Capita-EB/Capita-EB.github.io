@@ -1,11 +1,23 @@
 ---
 layout: default
 ---
-<h2>{{ page.title }}</h2>
-<p class="meta">{{ page.date | date_to_string }}</p>
+
+<dl>
+    <dt>Published:</dt>
+    <dd class="highlight">{{ page.date | date: "%-d %B %Y" }}</dd>
+
+    <dt>Author:</dt>
+    <dd class="highlight">Orbit Tech Team</dd>
+</dl>
 
 <article class="post">
 {{ content }}
+    <div class="pagination">
+        <a href="/" title="Home">BACK TO HOME</a>
+
+
+
+    </div>
 </article>
 
 {% include post-related-posts.html %}

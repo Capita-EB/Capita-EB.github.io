@@ -2,26 +2,32 @@
 <html>
     {% include page-head.html %}
     <body>
-
         <div class="site">
             {% include header.html %}
             <div id="page-content" class="page-centered">
-                <div class="row-fluid">
-                    <div class="span9">
-                        <div class="panel roundedbox">
+                <div id="content" class="clearfix">
+                    <section id="main">
                             {{ content }}
-                        </div>
-                    </div>
 
-                    <div class="span3">
-                        {% include post-categories.html %}
-                    </div>
-                </div>
 
+
+                </section>
+                <aside>
+                    {% include post-categories.html %}
+                    </aside>
+                <aside>
+                    {% include blog-featured-articles.html %}
+                </aside>
+                    <div id="back-to-top">
+
+                    </div>
+                                  </div>
+                {% include footer.html %}
 
             </div>
 
-            {% include footer.html %}
+
+
         </div>
     </body>
 </html>
