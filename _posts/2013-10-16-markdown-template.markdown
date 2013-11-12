@@ -2,7 +2,7 @@
 layout: post
 title:  "Dummy Post"
 date:   16-10-2013
-category: automated-testing
+category: automated testing
 excerpt: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris nec tincidunt nisl. Etiam vel pharetra purus. Ut convallis aliquam mauris, quis rutrum nulla ornare id. Praesent sodales, elit ut dignissim consequat, eros tellus malesuada nulla, et fringilla lectus nisl sit amet enim. Praesent vitae interdum tortor. Mauris non imperdiet lectus, ut hendrerit magna. Morbi convallis, enim vitae iaculis ultricies, orci lorem eleifend diam, at mollis purus nibh non nulla. Donec aliquet eget tortor a tincidunt. Suspendisse convallis consequat tellus a elementum. Vivamus aliquet porttitor sapien. Etiam sed justo id urna blandit dictum sed sed lacus.
 image: what-is-scrum.gif
 homepageStyle: 2

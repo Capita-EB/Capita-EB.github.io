@@ -2,7 +2,7 @@
 layout: post
 title:  "Setting up fixtures to test against"
 date:   11-11-2013
-category: automated-testing
+category: automated testing
 excerpt: One of the challenges testing a system with a large domain and a complex data model is setting up fixtures to test against.  Once we move beyond unit tests and want to create real objects with real data - either as part of the setup stage of an automated test or for manually testing - then things become more challenging.
 image: what-is-scrum.gif
 homepageStyle: 2

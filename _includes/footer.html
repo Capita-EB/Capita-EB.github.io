@@ -11,8 +11,8 @@
     $(function() {
         var url = window.location.pathname,
             dir = url.substring(0, url.lastIndexOf('/')).split('/'),
-            page = dir[1];
-        if (page !==undefined) {
+            page = parseInt(dir[1]);
+        if (page !==undefined && !isNaN(page)) {
             $('.pagination a#'+ page).addClass('active');
         } else {
             $('.pagination a:first').addClass('active');
@@ -20,7 +20,6 @@
 
 
         $('#back-to-top').click(function() {
-            console.log('clicked');
             $('body,html').animate({
                 scrollTop: 0
             }, 800);

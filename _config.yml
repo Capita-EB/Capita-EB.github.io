@@ -1,7 +1,7 @@
 name: Tech Blog
 markdown: redcarpet
 pygments: false
-paginate: 2
+paginate: 1
 paginate_path: "/:num"
 safe: false
 sass:
