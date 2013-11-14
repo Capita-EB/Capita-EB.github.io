@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html>
+    <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Setting up fixtures to test against</title>
+    <meta name="viewport" content="width=device-width">
+    <link href='http://fonts.googleapis.com/css?family=Lato:300' rel='stylesheet' type='text/css'>
+    <!-- syntax highlighting CSS -->
+    <link rel="stylesheet" href="/css/syntax.css">
+
+    <!-- Custom CSS -->
+    <!--<link href="https://orbit.orbitbenefits.com/styles/css/application/core.css?v=18.03.13" rel="stylesheet" type="text/css" media="screen, projection, print"/>-->
+    <!--<link href="https://orbit.orbitbenefits.com/styles/css/application/admin/admin.css" rel="stylesheet" type="text/css" media="screen, projection, print"/>-->
+    <!--<link href="https://orbit.orbitbenefits.com/styles/css/application/demo.css" rel="stylesheet" type="text/css"/>-->
+    <link rel="stylesheet" href="/css/main.css">
+
+    <script src="/javascripts/assets/modernizr.custom.75414.js" type="text/javascript"></script>
+    <script src="/javascripts/assets/conditionizr.min.js" type="text/javascript"></script>
+
+    <script type="text/javascript">
+        conditionizr({
+            debug      : false,
+            ieLessThan : { active: true, version: '10', scripts: false, styles: false, classes: true},
+            chrome     : { scripts: false, styles: false, classes: true, customScript: false },
+            safari     : { scripts: false, styles: false, classes: true, customScript: false },
+            opera      : { scripts: false, styles: false, classes: true, customScript: false },
+            firefox    : { scripts: false, styles: false, classes: true, customScript: false },
+            ie10       : { scripts: false, styles: false, classes: true, customScript: false },
+            ie9        : { scripts: false, styles: false, classes: true, customScript: false },
+            ie8        : { scripts: false, styles: false, classes: true, customScript: false },
+            ie7        : { scripts: false, styles: false, classes: true, customScript: false },
+            ie6        : { scripts: false, styles: false, classes: true, customScript: false },
+            retina     : { scripts: false, styles: false, classes: true, customScript: false },
+            mac        : true,
+            win        : true,
+            x11        : true,
+            linux      : true
+        });
+    </script>
+
+
+    <!--[if lt IE 9]>
+    <script src="/javascripts/assets/html5shiv.js"></script>
+    <![endif]-->
+
+
+
+</head>
+    <body>
+        <div class="site">
+            
+
+
+
+
+              <header class="page-centered">
+                  <a href="/"><h1>Orbit | Tech Blog</h1></a>
+              </header>
+<div id="page-title" class="page-centered">
+
+
+    <h2 class="page-centered">Setting up fixtures to test against</h2>
+</div>
+            <div id="page-content" class="page-centered">
+                <div id="content" class="clearfix">
+                    <section id="main">
+                            <dl>
+    <dt>Published:</dt>
+    <dd class="highlight">11 November 2013</dd>
+
+    <dt>Author:</dt>
+    <dd class="highlight">Orbit Tech Team</dd>
+</dl>
+
+<article class="post">
+<h3>Problem</h3>
+
+<p>One of the challenges testing a system with a large domain and a complex data model is setting up fixtures to test against.</p>
+
+<p>Once we move beyond unit tests and want to create real objects with real data – either as part of the setup stage of an automated test or for manually testing – then things become more challenging:</p>
+
+<ul>
+<li>The data items we care about for the test may not all live on the object; our test might be interested in the payroll cut-off date for an employee for instance, but concerning ourselves with the details of where that data goes and the object graph needed to correctly set it all up is error prone and time consuming</li>
+<li>Extra code in our tests concerned with fixture details just adds noise to the test: it makes it harder to understand and adds to the maintenance burden.</li>
+<li>False-negatives: To get valid fixtures we might well have to set up other bits of data and other objects that our test just doesn’t care about, otherwise our tests fail for reasons unrelated to our test scenario</li>
+<li>False-positives: Tests might unwittingly pass because we’ve left fields empty that we don’t (think we) care about for the purposes of our test e.g. our test only works properly because something is null or false etc.</li>
+</ul>
+
+<h3>Initial Solution</h3>
+
+<p>As an example let’s imagine a simple employee that we want to create for our test:</p>
+
+<!--code-->
+<div class="highlight"><pre><code class="text language-text" data-lang="text">public class Employee {
+    String firstname;
+    String surname;
+    LocalDate dateOfBirth;
+    BigDecimal basicSalary;
+    Address homeAddress;
+}
+</code></pre></div>
+<p>And some typical test code to create one:</p>
+
+<!--code-->
+<div class="highlight"><pre><code class="text language-text" data-lang="text">public class EmployeeTest {
+     private final LocalDate DATE_OF_BIRTH = new LocalDate().minusYears(50);
+     private Employee employee;
+     @Before
+     public void setUpEmployee(){
+         employee = new Employee();
+         employee.setDateOfBirth(DATE_OF_BIRTH);
+     }
+}
+</code></pre></div>
+<p>For our test purposes we’re only interested in the age of our employee, but you can see we’re already getting bogged down with concerns about the rest of the data on our employee:</p>
+
+<ul>
+<li>What if the database requires non-null values for firstname and surname?</li>
+<li>What if the address is required too? Just what’s involved with making an Address object?</li>
+<li>Will it matter if the salary is not set to anything? I’m not interested in salary here but maybe I should make something up in case having a null salary makes something weird happen elsewhere.</li>
+<li>You can imagine how quickly this complexity escalates with real code.</li>
+</ul>
+
+<h3>Improvement - The Builder</h3>
+
+<p>Using the Builder Pattern to create our fixtures can address some of these issues:</p>
+
+<ul>
+<li>All the fields in our object are pre-populated</li>
+<li>We only need to override the contents of the fields that we care about</li>
+<li>Use method chaining ending with build() to create our object.</li>
+</ul>
+
+<!--code-->
+<div class="highlight"><pre><code class="text language-text" data-lang="text">public class EmployeeBuilder {
+    private LocalDate dateOfBirth = new LocalDate().minusYears(30);
+    private String firstname = “Firstname”;
+    private String surname = “Surname”;
+    private BigDecimal basicSalary = new BigDecimal(20000);
+    private Address homeAddress = AddressBuilder.addressBuilder().build();
+    private EmployeeBuilder(){}
+
+    public static EmployeeBuilder employeeBuilder(){
+        return new EmployeeBuilder();
+    }
+
+    public EmployeeBuilder firstname(String firstname) {
+        this.firstname = firstname;
+        return this;
+    }
+
+    public EmployeeBuilder surname(String surname) {
+        this.surname = surname;
+        return this;
+    }
+
+    public EmployeeBuilder age(int age) {
+        this.dateOfBirth = new LocalDate().minusYears(age);
+        return this;
+    }
+
+    public EmployeeBuilder dateOfBirth(int age) {
+        this.dateOfBirth = new LocalDate().minusYears(age);
+        return this;
+    }
+
+    public EmployeeBuilder basicSalary(BigDecimal salary){
+        this.basicSalary = basicSalary;
+        return this;
+    }
+
+    public EmployeeBuilder basicSalary(Integer salary) {
+        this.basicSalary = new BigDecimal(salary);
+        return this;
+    }
+
+    public EmployeeBuilder homeAddress(Address address) {
+        this.homeAddress = homeAddress;
+        return this;
+    }
+
+    public Employee build(){
+        Employee employee = new Employee();
+        employee.setFirstname(firstname);
+        employee.setSurname(surname);
+        employee.setDateOfBirth(dateOfBirth);
+        employee.setBasicSalary(basicSalary);
+        employee.setHomeAddress(homeAddress);
+        return employee;
+    }
+}
+</code></pre></div>
+<p>This makes our test setup look a bit nicer and takes away some of the concerns we were having:</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">public class EmployeeTest {
+    private final Integer AGE = 50;
+    private Employee employee;
+    @Before
+    public void setUpEmployee(){
+        employee = EmployeeBuilder.employeeBuilder().age(AGE).build();
+    }
+}
+</code></pre></div>
+<p>A nice feature of builders is that you can add and overload methods to make fixture setup simpler:</p>
+
+<ul>
+<li>We’ve overloaded basicSalary() so you can supply a simple Integer and it will convert it to the required BigDecimal for you</li>
+<li>The dateOfBirth(LocalDate) method is accompanied by an age(Integer) method so you can make your test code simpler and more readable by avoiding the boilerplate of massaging a LocalDate</li>
+<li>Finally you may have noticed that the homeAddress field is populated initially with … an AddressBuilder!</li>
+</ul>
+
+<h3>Better Data</h3>
+
+<p>We’ve made our test setup a lot better with the builder but we can do better with the quality of the default data. At the moment every test that uses our builder is going to get an Employee with exactly the same default attributes which may create its own false-positive problem for us.</p>
+
+<p>What we need is random data:</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">public class EmployeeBuilder {
+    private Date dateOfBirth = Random.pastDate(years(17), years(64)).next();
+    private String firstname = Random.string(50).next();
+    private String surname = Random.string(50).next();
+    private BigDecimal basicSalary = Random.bigDecimal(1000000).next();
+    private Address homeAddress = AddressBuilder.addressBuilder().build();
+    …
+}
+</code></pre></div>
+<p>Well this looks exciting! Let’s take a look at the Random class:</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">public class Random {
+    public static Generator&lt;String&gt; string = new StringGenerator(10);
+    public static Generator&lt;Integer&gt; integer = new IntegerGenerator(Integer.MAX_VALUE);
+    public static Generator&lt;BigDecimal&gt; bigDecimal = new BigDecimalGenerator(999999, 2);
+    …
+}
+</code></pre></div>
+<p>It’s basically a collection of static Generator<T> members and some static helper methods.</p>
+
+<p>Let’s look at the Generator<T> and the IntegerGenerator classes:</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">public abstract class Generator&lt;T&gt; implements Iterator&lt;T&gt; {
+    @Override
+        public boolean hasNext() {
+        return true;
+    }
+    @Override
+    public void remove() {
+        throw new UnsupportedOperationException();
+    }
+}
+
+class IntegerGenerator extends Generator&lt;Integer&gt; {
+    private static java.util.Random random = new java.util.Random();
+    private Integer max;
+    public IntegerGenerator(Integer max) {
+        this.max = max;
+    }
+    @Override
+    public Integer next() {
+        return random.nextInt(max);
+    }
+}
+</code></pre></div>
+<p>Generator<T> is a never-ending abstract Iterator<T> implementation leaving it up to the extending classes to implement next().</p>
+
+<p>IntegerGenerator simply returns a new random integer between 0 and the specified maximum for each call to next(). You can see the default version provided by Random.integer uses Integer.MAX_VALUE when it creates it and it also provides a utility method to create your own IntegerGenerator with a different maximum if needed:</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">public static Generator&lt;Integer&gt; integer(Integer max) {
+    return new IntegerGenerator(max);
+}
+</code></pre></div>
+<p>And that is the general idea with all the other types we want to generate.</p>
+
+<p>The default Random.string implementation creates a StringGenerator that returns a 10-character long random string, Random.string(Integer) will give you a StringGenerator that generates a random string of the given length if you need it. There are also generators for dates, selecting enums at random and so on.</p>
+
+<p>Generating data with tighter formatting is also a useful addition for tests - here’s an email address generator:</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">public class EmailAddressGenerator extends Generator&lt;String&gt; {
+    @Override
+    public String next() {
+        return format(&quot;%s@%s.%s&quot;, Random.string(10).next(), Random.string(10).next(), Random.values(&quot;com&quot;, &quot;co.uk&quot;, &quot;gov.uk&quot; , &quot;org&quot;, &quot;net&quot;).next());
+    }
+}
+</code></pre></div>
+<p>A postcode generator:</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">public class PostcodeGenerator extends Generator&lt;String&gt; {
+    @Override
+    public String next() {
+        return format(&quot;%s%s%01d %01d%s&quot;,
+            random(1, &quot;ABCDEFGHIJKLMNOPRSTUWYZ&quot;),
+            random(1, &quot;ABCDEFGHKLMNOPQRSTUVWXY&quot;),
+            Random.integer(9).next(),
+            Random.integer(9).next(),
+            random(2, &quot;ABDEFGHJLNPQRSTUWXYZ&quot;));
+    }
+}
+</code></pre></div>
+<p>And a random URI generator:</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">public class UriGenerator extends Generator&lt;URI&gt; {
+    @Override
+    public URI next() {
+        try {
+            return new URI(String.format(&quot;http://%s.%s&quot;, Random.string.next(), Random.values(&quot;com&quot;, &quot;co.uk&quot;, &quot;org&quot;).next()));
+        } catch (URISyntaxException e) {
+            throw new RuntimeException(e);
+        }
+    }
+}
+</code></pre></div>
+<p>We have an collection of these utils in our repository <a href="https://github.com/capitaeb">here</a>.</p>
+
+    <div class="pagination">
+        <a href="/" title="Home">BACK TO HOME</a>
+
+
+
+    </div>
+</article>
+
+<section id="related-posts">
+    <h1>Related posts</h1>
+    <ul>
+        
+            
+        
+            
+                 <li>
+                         <p class="post-title">Dummy Post</p>
+                     <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris nec tincidunt nisl. Etiam vel pharetra purus. Ut convallis aliquam mauris, quis rutrum nulla ornare id. Praesent sodales, elit ut dignissim consequat, eros tellus malesuada nulla, et fringilla lectus nisl sit amet enim. Praesent vitae interdum tortor. Mauris non imperdiet lectus, ut hendrerit magna. Morbi convallis, enim vitae iaculis ultricies, orci lorem eleifend diam, at mollis purus nibh non nulla. Donec aliquet eget tortor a tincidunt. Suspendisse convallis consequat tellus a elementum. Vivamus aliquet porttitor sapien. Etiam sed justo id urna blandit dictum sed sed lacus. <a href="/automated-testing/2013/10/16/markdown-template.html"> read more ...</a></p>
+                 </li>
+            
+        
+    </ul>
+</section>
+
+
+
+
+                </section>
+                <aside>
+                    <div class="panel roundedbox">
+    <h3>Categories</h3>
+    <ul>
+        
+        <li>
+            <a href="/categories/automated-testing">automated-testing</a></li>
+        
+    </ul>
+</div>
+                    </aside>
+                <aside>
+                    
+<div class="panel roundedbox">
+    <h3>Featured Articles</h3>
+    <ul>
+
+
+
+
+
+
+
+<li>
+    <a href="/automated-testing/2013/10/16/markdown-template.html">
+        Dummy Post
+    </a>
+</li>
+
+
+
+        </ul>
+    </div>
+                </aside>
+                    <div id="back-to-top">
+
+                    </div>
+                                  </div>
+                <footer class="clearfix">
+    <div>
+        <p>
+            Capita Employee Benefits is a trading name of Capita Employee Benefits Limited and Capita Employee Benefits (Consulting) Limited. Part of Capita plc. www.capita.co.uk. Capita Employee Benefits Limited and Capita Employee Benefits (Consulting) Limited are registered in England & Wales No: 02260524 and 01860772 respectively. Registered Office: 17 Rochester Row, Westminster, London, SW1P 1QT. Separately authorised and regulated by the Financial Conduct Authority.
+        </p>
+    </div>
+</footer>
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script>
+    $(function() {
+        var url = window.location.pathname,
+            dir = url.substring(0, url.lastIndexOf('/')).split('/'),
+            page = dir[1];
+        if (page !==undefined) {
+            $('.pagination a#'+ page).addClass('active');
+        } else {
+            $('.pagination a:first').addClass('active');
+        }
+
+
+        $('#back-to-top').click(function() {
+            console.log('clicked');
+            $('body,html').animate({
+                scrollTop: 0
+            }, 800);
+            return false;
+        });
+
+    });
+</script>
+
+            </div>
+
+
+
+        </div>
+    </body>
+</html>

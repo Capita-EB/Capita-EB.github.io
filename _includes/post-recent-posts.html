@@ -1,0 +1,32 @@
+
+<div class="posts-list clearfix">
+    <ul>
+        {% for post in paginator.posts %}
+        <li class="clearfix">
+            <div class="post-summary layout-{{ post.homepageStyle }}">
+                <h3><a href="{{ post.url }}">{{ post.title }}</a></h3>
+                <dl>
+                    <dt>Published:</dt>
+                    <dd class="highlight">{{ post.date | date_to_string }}</dd>
+
+                    <dt>Category:</dt>
+                    <dd class="highlight">{{ post.categories | category_links }}</dd>
+
+                    <dt>Author:</dt>
+                    <dd class="highlight">Orbit Tech Team</dd>
+
+
+                </dl>
+
+                {% if post.image %}
+                <img src="/images/{{ post.image }}" />
+                {% endif %}
+                <p> {{ post.excerpt }}</p>
+                    <a class="highlight read-more" href="{{ post.url }}">Read more >></a>
+                </div>
+        </li>
+        {% endfor %}
+    </ul>
+
+</div>
+
